@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSG Client Intake — Optimum Standard Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #042C53; --blue: #185FA5; --sky: #E6F1FB;
+    --teal: #1D9E75; --teal-light: #E1F5EE;
+    --charcoal: #2C2C2A; --muted: #3D3C39; --border: rgba(4,44,83,0.12);
+    --bg: #FAFAF8;
+  }
+  body { font-family: 'DM Sans', sans-serif; font-weight: 300; color: var(--charcoal); background: var(--bg); }
+
+  .header {
+    background: var(--navy); padding: 2.5rem 3rem;
+    display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;
+  }
+  .header-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 500; color: rgba(255,255,255,0.9); letter-spacing: 0.06em; }
+  .header-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: #fff; }
+  .header-sub { font-size: 0.82rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem; letter-spacing: 0.04em; }
+
+  .progress-bar { height: 3px; background: var(--border); }
+  .progress-fill { height: 100%; background: var(--teal); width: 0%; transition: width 0.4s ease; }
+
+  .form-wrap { max-width: 760px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+  .section-block { margin-bottom: 3rem; }
+  .section-heading {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400;
+    color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; margin-bottom: 1.75rem;
+  }
+  .section-num { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--teal); display: block; margin-bottom: 0.35rem; }
+
+  .field { margin-bottom: 1.5rem; }
+  label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--navy); margin-bottom: 0.45rem; letter-spacing: 0.01em; }
+  label .sub { font-weight: 300; color: var(--muted); font-size: 0.78rem; display: block; margin-top: 2px; }
+
+  input[type="text"], input[type="email"], input[type="number"], select, textarea {
+    width: 100%; font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 0.92rem;
+    padding: 0.75rem 1rem; border: 1px solid var(--border); background: #fff;
+    color: var(--charcoal); outline: none; transition: border-color 0.2s; border-radius: 0;
+    appearance: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); }
+  textarea { resize: vertical; min-height: 100px; line-height: 1.65; }
+  select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23185FA5' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+
+  .radio-group, .check-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.5rem; margin-top: 0.25rem; }
+  .radio-option, .check-option {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.65rem 0.9rem; border: 1px solid var(--border); cursor: pointer;
+    font-size: 0.85rem; color: var(--charcoal); transition: all 0.15s; background: #fff;
+  }
+  .radio-option:hover, .check-option:hover { border-color: var(--blue); background: var(--sky); }
+  .radio-option input, .check-option input { accent-color: var(--blue); width: 15px; height: 15px; cursor: pointer; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .scale-wrap { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
+  .scale-label { font-size: 0.75rem; color: var(--muted); min-width: 40px; }
+  input[type="range"] { flex: 1; accent-color: var(--blue); }
+  .scale-val { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; color: var(--navy); min-width: 30px; text-align: center; }
+
+  .note-box { background: var(--teal-light); border-left: 3px solid var(--teal); padding: 1rem 1.25rem; margin-bottom: 2rem; font-size: 0.84rem; line-height: 1.65; color: var(--charcoal); }
+
+  .submit-area { text-align: center; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .submit-btn {
+    background: var(--navy); color: #fff; border: none; cursor: pointer;
+    padding: 1rem 3rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+    font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; transition: background 0.2s;
+  }
+  .submit-btn:hover { background: var(--blue); }
+  .submit-note { font-size: 0.75rem; color: var(--muted); margin-top: 0.75rem; }
+
+  .footer { background: var(--navy); padding: 1.25rem 3rem; text-align: center; }
+  .footer p { font-size: 0.75rem; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+
+  @media (max-width: 600px) {
+    .header { padding: 1.5rem; }
+    .form-wrap { padding: 2rem 1.25rem 4rem; }
+    .field-row { grid-template-columns: 1fr; }
+    .radio-group, .check-group { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-logo">Optimum Standard Group</div>
+    <div class="header-title">Client Intake Form</div>
+    <div class="header-sub">Confidential · Takes 10–15 minutes · All information is private</div>
+  </div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<div class="form-wrap">
+
+  <div class="note-box">
+    Everything you share here is strictly confidential and used only to prepare your personalized optimization protocol. There are no right or wrong answers — be as honest as possible so we can do our best work together.
+  </div>
+
+  <!-- SECTION 1: BASICS -->
+  <div class="section-block">
+    <span class="section-num">Section 01</span>
+    <h2 class="section-heading">About You</h2>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Full name</label>
+        <input id="f_name" type="text" placeholder="Your full name">
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input id="f_email" type="email" placeholder="your@email.com">
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Phone number</label>
+        <input id="f_phone" type="tel" placeholder="e.g. (818) 555-0100">
+      </div>
+      <div class="field">
+        <label>Age</label>
+        <input id="f_age" type="number" placeholder="e.g. 42" min="18" max="99">
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Biological sex</label>
+        <select id="f_sex">
+          <option value="">Select...</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Prefer not to say</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Occupation / Industry
+          <span class="sub">Helps us understand your schedule and demands</span>
+        </label>
+        <input id="f_occupation" type="text" placeholder="e.g. Executive, Entrepreneur, Healthcare, etc.">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>How did you hear about Optimum Standard Group?</label>
+      <select id="f_referral">
+        <option value="">Select...</option>
+        <option>Personal referral</option>
+        <option>Word of mouth</option>
+        <option>Social media</option>
+        <option>Website</option>
+        <option>Other</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- SECTION 2: GOALS -->
+  <div class="section-block">
+    <span class="section-num">Section 02</span>
+    <h2 class="section-heading">Your Goals</h2>
+
+    <div class="field">
+      <label>What is your primary goal right now? <span class="sub">Select all that apply</span></label>
+      <div class="check-group">
+        <label class="check-option"><input type="checkbox"> Fat loss / body recomposition</label>
+        <label class="check-option"><input type="checkbox"> Muscle building / strength</label>
+        <label class="check-option"><input type="checkbox"> Energy & vitality</label>
+        <label class="check-option"><input type="checkbox"> Longevity / anti-aging</label>
+        <label class="check-option"><input type="checkbox"> Recovery & injury repair</label>
+        <label class="check-option"><input type="checkbox"> Hormonal optimization</label>
+        <label class="check-option"><input type="checkbox"> Cognitive performance</label>
+        <label class="check-option"><input type="checkbox"> Sleep quality</label>
+        <label class="check-option"><input type="checkbox"> Metabolic health</label>
+        <label class="check-option"><input type="checkbox"> General optimization</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Describe your #1 goal in your own words
+        <span class="sub">Be specific — what does success look like to you 90 days from now?</span>
+      </label>
+      <textarea id="f_goal" placeholder="e.g. I want to drop 20 lbs, increase my energy before 9am without caffeine, and finally understand what my labs actually mean..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>What has held you back from reaching this goal so far?</label>
+      <textarea id="f_held_back" placeholder="e.g. Conflicting information, didn't know where to start, tried things that didn't work..."></textarea>
+    </div>
+  </div>
+
+  <!-- SECTION 3: HEALTH HISTORY -->
+  <div class="section-block">
+    <span class="section-num">Section 03</span>
+    <h2 class="section-heading">Health Baseline</h2>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Current height</label>
+        <input id="f_height" type="text" placeholder="e.g. 5'11&quot;">
+      </div>
+      <div class="field">
+        <label>Current weight</label>
+        <input id="f_weight" type="text" placeholder="e.g. 195 lbs">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Do you have any diagnosed medical conditions? <span class="sub">This is for protocol safety only — all information is confidential</span></label>
+      <textarea id="f_conditions" placeholder="e.g. Type 2 diabetes, thyroid issues, hypertension — or 'none'"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Current medications or supplements</label>
+      <textarea id="f_meds" placeholder="List any prescriptions, OTC medications, or supplements you currently take"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Have you had bloodwork or labs done in the last 12 months?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="labs"> Yes — I have results</label>
+        <label class="radio-option"><input type="radio" name="labs"> Yes — but I don't have them handy</label>
+        <label class="radio-option"><input type="radio" name="labs"> No — not recently</label>
+        <label class="radio-option"><input type="radio" name="labs"> Never had labs done</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>If yes — what panels were run? <span class="sub">e.g. CBC, metabolic panel, testosterone, thyroid, cortisol, etc.</span></label>
+      <textarea id="f_labs" placeholder="List what you know, or attach results if you have them"></textarea>
+    </div>
+  </div>
+
+  <!-- SECTION 4: LIFESTYLE -->
+  <div class="section-block">
+    <span class="section-num">Section 04</span>
+    <h2 class="section-heading">Lifestyle & Daily Habits</h2>
+
+    <div class="field">
+      <label>Current exercise routine</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="exercise"> None currently</label>
+        <label class="radio-option"><input type="radio" name="exercise"> 1–2x per week</label>
+        <label class="radio-option"><input type="radio" name="exercise"> 3–4x per week</label>
+        <label class="radio-option"><input type="radio" name="exercise"> 5+ days per week</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Describe your current diet approach <span class="sub">No judgment — just be honest</span></label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="diet"> No structure / eat intuitively</label>
+        <label class="radio-option"><input type="radio" name="diet"> Calorie tracking</label>
+        <label class="radio-option"><input type="radio" name="diet"> High protein focus</label>
+        <label class="radio-option"><input type="radio" name="diet"> Keto / low carb</label>
+        <label class="radio-option"><input type="radio" name="diet"> Intermittent fasting</label>
+        <label class="radio-option"><input type="radio" name="diet"> Plant-based</label>
+        <label class="radio-option"><input type="radio" name="diet"> Mixed / other</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Rate your average sleep quality
+        <span class="sub">1 = terrible / 10 = excellent</span>
+      </label>
+      <div class="scale-wrap">
+        <span class="scale-label">Poor</span>
+        <input type="range" min="1" max="10" value="5" id="sleep-range" oninput="document.getElementById('sleep-val').textContent=this.value; updateProgress()">
+        <span class="scale-label">Excellent</span>
+        <span class="scale-val" id="sleep-val">5</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Rate your current daily energy levels
+        <span class="sub">1 = exhausted all day / 10 = consistently high energy</span>
+      </label>
+      <div class="scale-wrap">
+        <span class="scale-label">Low</span>
+        <input type="range" min="1" max="10" value="5" id="energy-range" oninput="document.getElementById('energy-val').textContent=this.value; updateProgress()">
+        <span class="scale-label">High</span>
+        <span class="scale-val" id="energy-val">5</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Rate your current stress levels
+        <span class="sub">1 = very low / 10 = extremely high</span>
+      </label>
+      <div class="scale-wrap">
+        <span class="scale-label">Low</span>
+        <input type="range" min="1" max="10" value="5" id="stress-range" oninput="document.getElementById('stress-val').textContent=this.value; updateProgress()">
+        <span class="scale-label">High</span>
+        <span class="scale-val" id="stress-val">5</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Alcohol consumption</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="alcohol"> None</label>
+        <label class="radio-option"><input type="radio" name="alcohol"> Occasional (1–2x/month)</label>
+        <label class="radio-option"><input type="radio" name="alcohol"> Social (weekends)</label>
+        <label class="radio-option"><input type="radio" name="alcohol"> Regular (several times/week)</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: PREVIOUS EXPERIENCE -->
+  <div class="section-block">
+    <span class="section-num">Section 05</span>
+    <h2 class="section-heading">Previous Optimization Experience</h2>
+
+    <div class="field">
+      <label>Have you worked with a coach, consultant, or functional medicine doctor before?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="coach"> Yes — positive experience</label>
+        <label class="radio-option"><input type="radio" name="coach"> Yes — mixed results</label>
+        <label class="radio-option"><input type="radio" name="coach"> Yes — not helpful</label>
+        <label class="radio-option"><input type="radio" name="coach"> No — this is my first time</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>What protocols, programs, or products have you already tried? <span class="sub">What worked? What didn't?</span></label>
+      <textarea id="f_protocols" placeholder="e.g. Tried X supplement stack for 3 months — felt nothing. Did TRT consult but didn't follow through. Used Huberman protocols for sleep — actually helped."></textarea>
+    </div>
+
+    <div class="field">
+      <label>How familiar are you with peptides, biomarker testing, or advanced wellness protocols?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="familiarity"> Completely new to this</label>
+        <label class="radio-option"><input type="radio" name="familiarity"> Basic awareness</label>
+        <label class="radio-option"><input type="radio" name="familiarity"> Moderate knowledge</label>
+        <label class="radio-option"><input type="radio" name="familiarity"> Fairly advanced</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: INVESTMENT & LOGISTICS -->
+  <div class="section-block">
+    <span class="section-num">Section 06</span>
+    <h2 class="section-heading">Logistics & Expectations</h2>
+
+    <div class="field">
+      <label>Which package are you most interested in?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="package"> Intake + Roadmap ($497)</label>
+        <label class="radio-option"><input type="radio" name="package"> Optimization Sprint ($1,497)</label>
+        <label class="radio-option"><input type="radio" name="package"> VIP Day ($2,500)</label>
+        <label class="radio-option"><input type="radio" name="package"> Not sure yet</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>How soon are you looking to start?</label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="timeline"> Immediately</label>
+        <label class="radio-option"><input type="radio" name="timeline"> Within 2 weeks</label>
+        <label class="radio-option"><input type="radio" name="timeline"> Within a month</label>
+        <label class="radio-option"><input type="radio" name="timeline"> Just exploring for now</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Do you have any questions or anything else you want us to know before your call?</label>
+      <textarea id="f_notes" placeholder="Anything at all — no question is too basic or too advanced."></textarea>
+    </div>
+  </div>
+
+  <div class="submit-area">
+    <button class="submit-btn" id="submit-btn" onclick="submitForm()">Submit My Intake Form</button>
+    <p class="submit-note" id="submit-note">By submitting, you confirm that all information provided is accurate to the best of your knowledge.<br>Optimum Standard Group LLC · All information is strictly confidential.</p>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>Optimum Standard Group LLC · optimumstandardgroup.com</p>
+</div>
+
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  emailjs.init('xo3fQqSp5qYPIdcm0');
+
+  // Progress bar
+  function updateProgress() {
+    const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="number"], select, textarea');
+    let filled = 0;
+    inputs.forEach(i => { if (i.value && i.value.trim() !== '') filled++; });
+    const pct = Math.min(Math.round((filled / inputs.length) * 100), 100);
+    document.getElementById('progress').style.width = pct + '%';
+  }
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('change', updateProgress);
+    el.addEventListener('input', updateProgress);
+  });
+
+  // Get radio value by name
+  function radio(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.parentElement.textContent.trim() : 'Not selected';
+  }
+
+  // Get field value by ID
+  function val(id) {
+    const el = document.getElementById(id);
+    return el && el.value.trim() ? el.value.trim() : 'Not provided';
+  }
+
+  // Get all checked checkboxes in goals section
+  function goals() {
+    const checked = document.querySelectorAll('.check-group input[type="checkbox"]:checked');
+    return checked.length ? Array.from(checked).map(c => c.parentElement.textContent.trim()).join(', ') : 'None selected';
+  }
+
+  function submitForm() {
+    const btn = document.getElementById('submit-btn');
+    const note = document.getElementById('submit-note');
+
+    // Validate required fields
+    if (!document.getElementById('f_name').value.trim()) {
+      alert('Please enter your full name before submitting.');
+      return;
+    }
+    if (!document.getElementById('f_email').value.trim()) {
+      alert('Please enter your email address before submitting.');
+      return;
+    }
+
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+
+    const message = [
+      '=== SECTION 1: ABOUT ===',
+      `Full Name: ${val('f_name')}`,
+      `Email: ${val('f_email')}`,
+      `Phone: ${val('f_phone')}`,
+      `Age: ${val('f_age')}`,
+      `Biological Sex: ${document.getElementById('f_sex').value || 'Not selected'}`,
+      `Occupation: ${val('f_occupation')}`,
+      `How They Heard About OSG: ${document.getElementById('f_referral').value || 'Not selected'}`,
+      '',
+      '=== SECTION 2: GOALS ===',
+      `Primary Goals Selected: ${goals()}`,
+      `#1 Goal (their words): ${val('f_goal')}`,
+      `What Has Held Them Back: ${val('f_held_back')}`,
+      '',
+      '=== SECTION 3: HEALTH BASELINE ===',
+      `Height: ${val('f_height')}`,
+      `Weight: ${val('f_weight')}`,
+      `Diagnosed Conditions: ${val('f_conditions')}`,
+      `Current Medications / Supplements: ${val('f_meds')}`,
+      `Recent Bloodwork: ${radio('labs')}`,
+      `Lab Panels Run: ${val('f_labs')}`,
+      '',
+      '=== SECTION 4: LIFESTYLE ===',
+      `Exercise Routine: ${radio('exercise')}`,
+      `Diet Approach: ${radio('diet')}`,
+      `Sleep Quality (1-10): ${document.getElementById('sleep-val').textContent}`,
+      `Energy Levels (1-10): ${document.getElementById('energy-val').textContent}`,
+      `Stress Levels (1-10): ${document.getElementById('stress-val').textContent}`,
+      `Alcohol Consumption: ${radio('alcohol')}`,
+      '',
+      '=== SECTION 5: PREVIOUS EXPERIENCE ===',
+      `Prior Coach / Consultant: ${radio('coach')}`,
+      `Protocols / Programs Tried: ${val('f_protocols')}`,
+      `Familiarity with Peptides / Biomarkers: ${radio('familiarity')}`,
+      '',
+      '=== SECTION 6: LOGISTICS ===',
+      `Package Interest: ${radio('package')}`,
+      `Start Timeline: ${radio('timeline')}`,
+      `Additional Notes / Questions: ${val('f_notes')}`
+    ].join('\n');
+
+    emailjs.send('service_qixjfw5', 'template_o9repzq', {
+      from_name: val('f_name'),
+      from_email: val('f_email'),
+      message: message
+    })
+    .then(() => {
+      btn.textContent = 'Submitted!';
+      btn.style.background = '#1D9E75';
+      note.innerHTML = '<strong>Thank you — your intake has been received.</strong><br>We\'ll be in touch within 24 hours to schedule your discovery call.<br><br>Optimum Standard Group LLC &middot; All information is strictly confidential.';
+    })
+    .catch((err) => {
+      console.error('EmailJS error:', err);
+      btn.textContent = 'Submit My Intake Form';
+      btn.disabled = false;
+      alert('Something went wrong. Please try again or email us directly at hello@optimumstandardgroup.com');
+    });
+  }
+</script>
+
+</body>
+</html>
